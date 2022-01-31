@@ -199,8 +199,6 @@ async def give(ctx, *args):
     else:
         await ctx.send("""Commands must be sent in the "server-commands" channel""")
 
-# TODO: Add a command for summon (summon <entityType: string> <spawnPos: x y z>)
-
 
 # !summon
 
