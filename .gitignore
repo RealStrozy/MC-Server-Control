@@ -130,3 +130,6 @@ dmypy.json
 
 # Configuration files
 .ini
+
+# virtual environment
+/venv
