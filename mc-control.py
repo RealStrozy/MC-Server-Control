@@ -201,4 +201,25 @@ async def give(ctx, *args):
 
 # TODO: Add a command for summon (summon <entityType: string> <spawnPos: x y z>)
 
+
+# !summon
+
+
+@bot.command(name='summon', help='Summon an entity to a user. e.g. (!summon wolf XrayOven')
+async def give(ctx, *args):
+    from_channel = str(ctx.channel)
+    if from_channel == dc_channel:
+        print("Summoning" + args[0] + "to" + args[1])
+        os.system("""screen -S %s -p 0 -X stuff "execute %s ~ ~ ~ summon %s ~ ~ ~^M" """ % (server_name, args[1], args[0]))
+        message = [
+            "A friend is someone who knows all about you and still loves you",
+            "There is nothing better than a friend, unless it is a friend with chocolate",
+            "I would rather walk with a friend in the dark, than alone in the light",
+            "Only a true best friend can protect you from your immortal enemies",
+            "I got you to look after me, and you got me to look after you, and that's why"
+        ]
+        await ctx.send(random.choice(message))
+    else:
+        await ctx.send("""Commands must be sent in the "server-commands" channel""")
+
 bot.run(dc_token)
