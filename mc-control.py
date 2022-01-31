@@ -22,25 +22,6 @@ dc_channel = parser.get('discord', 'active_channel')
 server_name = parser.get('server', 'name')
 
 
-# TODO: Add cogs for category support. Syntax to follow.
-"""
-import discord
-from discord.ext import commands
-
-class MyCog(commands.Cog):
-   "Cog description"
-
-    @commands.command()
-    async def ping(self, ctx):
-        "Command description"
-        await ctx.send("Pong!")
-
-bot = commands.Bot(command_prefix="!")
-bot.add_cog(MyCog())
-bot.run('token')
-"""
-
-
 # Connect to Discord bot
 
 
@@ -189,6 +170,30 @@ async def make_night(ctx):
             "The trouble with morning is that it comes well before noon",
             "What hath night to do with sleep?",
             "Sleep is such a luxury, which i cant afford"
+        ]
+        await ctx.send(random.choice(message))
+    else:
+        await ctx.send("""Commands must be sent in the "server-commands" channel""")
+
+
+# Give objects
+
+
+@bot.command(name='give', help='Gives a user an object. e.g. (!give XrayOven bucket')
+async def give(ctx, *args):
+    from_channel = str(ctx.channel)
+    response = ""
+    for arg in args:
+        response = response + " " + arg
+    if from_channel == dc_channel:
+        print("Giving" + response)
+        os.system("""screen -S %s -p 0 -X stuff "give %s %s^M" """ % (server_name, args[0], args[1]))
+        message = [
+            "It's not how much we give but how much love we put into giving",
+            "We make a living by what we get. We make a life by what we give.",
+            "Happiness doesn't result from what we get, but from what we give",
+            "For it is in giving that we receive",
+            "Giving does not only precede receiving; it is the reason for it. It is in giving that we receive."
         ]
         await ctx.send(random.choice(message))
     else:
