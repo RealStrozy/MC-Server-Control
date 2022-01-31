@@ -22,6 +22,25 @@ dc_channel = parser.get('discord', 'active_channel')
 server_name = parser.get('server', 'name')
 
 
+# TODO: Add cogs for category support. Syntax to follow.
+"""
+import discord
+from discord.ext import commands
+
+class MyCog(commands.Cog):
+   "Cog description"
+
+    @commands.command()
+    async def ping(self, ctx):
+        "Command description"
+        await ctx.send("Pong!")
+
+bot = commands.Bot(command_prefix="!")
+bot.add_cog(MyCog())
+bot.run('token')
+"""
+
+
 # Connect to Discord bot
 
 
