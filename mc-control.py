@@ -22,25 +22,6 @@ dc_channel = parser.get('discord', 'active_channel')
 server_name = parser.get('server', 'name')
 
 
-# TODO: Add cogs for category support. Syntax to follow.
-"""
-import discord
-from discord.ext import commands
-
-class MyCog(commands.Cog):
-   "Cog description"
-
-    @commands.command()
-    async def ping(self, ctx):
-        "Command description"
-        await ctx.send("Pong!")
-
-bot = commands.Bot(command_prefix="!")
-bot.add_cog(MyCog())
-bot.run('token')
-"""
-
-
 # Connect to Discord bot
 
 
@@ -189,6 +170,53 @@ async def make_night(ctx):
             "The trouble with morning is that it comes well before noon",
             "What hath night to do with sleep?",
             "Sleep is such a luxury, which i cant afford"
+        ]
+        await ctx.send(random.choice(message))
+    else:
+        await ctx.send("""Commands must be sent in the "server-commands" channel""")
+
+
+# Give objects
+
+
+@bot.command(name='give', help='Gives a user an object. e.g. (!give XrayOven bucket')
+async def give(ctx, *args):
+    from_channel = str(ctx.channel)
+    response = ""
+    for arg in args:
+        response = response + " " + arg
+    if from_channel == dc_channel:
+        print("Giving" + response)
+        os.system("""screen -S %s -p 0 -X stuff "give %s %s^M" """ % (server_name, args[0], args[1]))
+        message = [
+            "It's not how much we give but how much love we put into giving",
+            "We make a living by what we get. We make a life by what we give.",
+            "Happiness doesn't result from what we get, but from what we give",
+            "For it is in giving that we receive",
+            "Giving does not only precede receiving; it is the reason for it. It is in giving that we receive."
+        ]
+        await ctx.send(random.choice(message))
+    else:
+        await ctx.send("""Commands must be sent in the "server-commands" channel""")
+
+# TODO: Add a command for summon (summon <entityType: string> <spawnPos: x y z>)
+
+
+# !summon
+
+
+@bot.command(name='summon', help='Summon an entity to a user. e.g. (!summon wolf XrayOven')
+async def give(ctx, *args):
+    from_channel = str(ctx.channel)
+    if from_channel == dc_channel:
+        print("Summoning" + args[0] + "to" + args[1])
+        os.system("""screen -S %s -p 0 -X stuff "execute %s ~ ~ ~ summon %s ~ ~ ~^M" """ % (server_name, args[1], args[0]))
+        message = [
+            "A friend is someone who knows all about you and still loves you",
+            "There is nothing better than a friend, unless it is a friend with chocolate",
+            "I would rather walk with a friend in the dark, than alone in the light",
+            "Only a true best friend can protect you from your immortal enemies",
+            "I got you to look after me, and you got me to look after you, and that's why"
         ]
         await ctx.send(random.choice(message))
     else:
