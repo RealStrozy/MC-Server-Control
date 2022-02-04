@@ -4,12 +4,39 @@ import os
 import configparser
 from discord.ext import commands
 import random
+import time
 
 # Define functions
+
+
 parser = configparser.ConfigParser()
 bot = commands.Bot(command_prefix='!')
 
-# Hardcoded global vars
+
+# Function to receive input from screen log
+
+
+def fetch(ctx):
+    await ctx.send("Let me check that")
+    time.sleep(12)
+    logpath = "%s/logs" % mc_installpath
+    print("Getting results from:" + logpath)
+    loglist = os.listdir(logpath)
+    loglist.sort(reverse=True)
+    logpath = "%s/logs/%s" % (mc_installpath, loglist[0])
+    with open(logpath, 'r') as f:
+        lines = f.read().splitlines()
+        output_line = lines[-1]
+    scr_output = output_line[22:]
+    if len(scr_output) > 1:
+        return scr_output
+    else:
+        return "No data found"
+
+
+# Global vars
+
+
 install_path = os.getcwd()
 
 # Divide INI file into global vars
@@ -20,6 +47,7 @@ dc_guild = parser.get('discord', 'guild')
 dc_channel = parser.get('discord', 'active_channel')
 # Server
 server_name = parser.get('server', 'name')
+mc_installpath = parser.get('server', 'mc_installpath')
 
 
 # Connect to Discord bot
@@ -208,7 +236,9 @@ async def give(ctx, *args):
     from_channel = str(ctx.channel)
     if from_channel == dc_channel:
         print("Summoning" + args[0] + "to" + args[1])
-        os.system("""screen -S %s -p 0 -X stuff "execute %s ~ ~ ~ summon %s ~ ~ ~^M" """ % (server_name, args[1], args[0]))
+        os.system(
+            """screen -S %s -p 0 -X stuff "execute %s ~ ~ ~ summon %s ~ ~ ~^M" """ % (server_name, args[1], args[0])
+        )
         message = [
             "A friend is someone who knows all about you and still loves you",
             "There is nothing better than a friend, unless it is a friend with chocolate",
@@ -217,6 +247,38 @@ async def give(ctx, *args):
             "I got you to look after me, and you got me to look after you, and that's why"
         ]
         await ctx.send(random.choice(message))
+    else:
+        await ctx.send("""Commands must be sent in the "server-commands" channel""")
+
+
+# !players
+
+
+@bot.command(name='players', help="List all logged in users.")
+async def players(ctx):
+    from_channel = str(ctx.channel)
+    if from_channel == dc_channel:
+        os.system(
+            """screen -S %s -p 0 -X stuff "list^M" """ % server_name
+        )
+        players_ls = fetch(ctx)
+        if len(players_ls) > 2:
+            if players_ls.find(",") > 0:
+                if players_ls.find(",") > 1:
+                    last_comma = players_ls.rindex(',')
+                    players_ls = players_ls[:last_comma] + " and" + players_ls[last_comma + 1:]
+                    await ctx.send(players_ls + " are online")
+                else:
+                    last_comma = players_ls.rindex(',')
+                    players_ls = players_ls[:last_comma - 1] + " and" + players_ls[last_comma + 1:]
+                    await ctx.send(players_ls + " are online")
+            else:
+                if players_ls != "No data found":
+                    await ctx.send(players_ls + " is online")
+                else:
+                    await ctx.send("I can't find that. Maybe you should log in and play awhile!")
+        else:
+            await ctx.send("There are no players online. Sad, really...")
     else:
         await ctx.send("""Commands must be sent in the "server-commands" channel""")
 
