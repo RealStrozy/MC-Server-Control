@@ -17,7 +17,6 @@ bot = commands.Bot(command_prefix='!')
 
 
 def fetch(ctx):
-    await ctx.send("Let me check that")
     time.sleep(12)
     logpath = "%s/logs" % mc_installpath
     print("Getting results from:" + logpath)
@@ -256,6 +255,7 @@ async def give(ctx, *args):
 
 @bot.command(name='players', help="List all logged in users.")
 async def players(ctx):
+    await ctx.send("Let me check that")
     from_channel = str(ctx.channel)
     if from_channel == dc_channel:
         os.system(
