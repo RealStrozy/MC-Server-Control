@@ -271,7 +271,6 @@ async def players(ctx):
                     await ctx.send(players_ls + " are online")
             else:
                 await ctx.send(players_ls + " is online")
-           
         else:
             await ctx.send("There are no players online. Sad, really...")
     else:
