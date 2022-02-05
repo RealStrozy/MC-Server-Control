@@ -27,10 +27,7 @@ def fetch(ctx):
         lines = f.read().splitlines()
         output_line = lines[-1]
     scr_output = output_line[22:]
-    if len(scr_output) > 1:
-        return scr_output
-    else:
-        return "No data found"
+    return scr_output
 
 
 # Global vars
@@ -262,7 +259,7 @@ async def players(ctx):
             """screen -S %s -p 0 -X stuff "list^M" """ % server_name
         )
         players_ls = fetch(ctx)
-        if len(players_ls) > 2:
+        if len(players_ls) > 1:
             if players_ls.find(",") > 0:
                 if players_ls.find(",") > 1:
                     last_comma = players_ls.rindex(',')
@@ -273,10 +270,8 @@ async def players(ctx):
                     players_ls = players_ls[:last_comma - 1] + " and" + players_ls[last_comma + 1:]
                     await ctx.send(players_ls + " are online")
             else:
-                if players_ls != "No data found":
-                    await ctx.send(players_ls + " is online")
-                else:
-                    await ctx.send("I can't find that. Maybe you should log in and play awhile!")
+                await ctx.send(players_ls + " is online")
+           
         else:
             await ctx.send("There are no players online. Sad, really...")
     else:
