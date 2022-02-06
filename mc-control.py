@@ -43,6 +43,9 @@ dc_channel = parser.get('discord', 'active_channel')
 # Server
 server_name = parser.get('server', 'name')
 mc_installpath = parser.get('server', 'mc_installpath')
+# !give filters
+give_filter = parser.get('command_filters', 'give')
+give_filter.split(",")
 
 
 # Connect to Discord bot
@@ -209,6 +212,10 @@ async def give(ctx, *args):
     for arg in args:
         response = response + " " + arg
     if from_channel == dc_channel:
+        args[1].replace(" ", "")
+        if args[1] in give_filter:
+            await ctx.send("You have been blocked form using this command by the server admin team.")
+            return()
         print("Giving" + response)
         os.system("""screen -S %s -p 0 -X stuff "give %s %s^M" """ % (server_name, args[0], args[1]))
         message = [
