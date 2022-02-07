@@ -46,7 +46,9 @@ mc_installpath = parser.get('server', 'mc_installpath')
 # !give filters
 give_filter = parser.get('command_filters', 'give')
 give_filter.split(",")
-
+# !summon filters
+summon_filter = parser.get('command_filters', 'summon')
+summon_filter.split(",")
 
 # Connect to Discord bot
 
@@ -202,7 +204,7 @@ async def make_night(ctx):
         await ctx.send("""Commands must be sent in the "server-commands" channel""")
 
 
-# Give objects
+# !give
 
 
 @bot.command(name='give', help='Gives a user an object. e.g. (!give XrayOven bucket')
@@ -237,7 +239,11 @@ async def give(ctx, *args):
 async def give(ctx, *args):
     from_channel = str(ctx.channel)
     if from_channel == dc_channel:
-        print("Summoning" + args[0] + "to" + args[1])
+        args[0].replace(" ", "")
+        if args[0] in summon_filter:
+            await ctx.send("You have been blocked form using this command by the server admin team.")
+            return ()
+        print("Summoning " + args[0] + "to " + args[1])
         os.system(
             """screen -S %s -p 0 -X stuff "execute %s ~ ~ ~ summon %s ~ ~ ~^M" """ % (server_name, args[1], args[0])
         )
