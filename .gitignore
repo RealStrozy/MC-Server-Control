@@ -6,3 +6,6 @@
 
 # .idea folder
 .idea
+
+# Logs folder for testing
+/logs
