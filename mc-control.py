@@ -2,6 +2,7 @@
 
 import os
 import configparser
+from configparser import ConfigParser
 from discord.ext import commands
 import random
 import time
@@ -29,26 +30,59 @@ def fetch():
     scr_output = output_line[22:]
     return scr_output
 
+
 # Global vars
 
 
 install_path = os.getcwd()
 
+
 # Divide INI file into global vars
 parser.read('%s/config.ini' % install_path)
+
+
 # Discord
-dc_token = parser.get('discord', 'token')
-dc_guild = parser.get('discord', 'guild')
-dc_channel = parser.get('discord', 'active_channel')
-# Server
-server_name = parser.get('server', 'name')
-mc_installpath = parser.get('server', 'mc_installpath')
-# !give filters
-give_filter = parser.get('command_filters', 'give')
-give_filter.split(",")
-# !summon filters
-summon_filter = parser.get('command_filters', 'summon')
-summon_filter.split(",")
+try:
+    dc_token = parser.get('discord', 'token')
+    dc_guild = parser.get('discord', 'guild')
+    dc_channel = parser.get('discord', 'active_channel')
+    # Server
+    server_name = parser.get('server', 'name')
+    mc_installpath = parser.get('server', 'mc_installpath')
+    # !give filters
+    give_filter = parser.get('command_filters', 'give')
+    give_filter.split(",")
+    # !summon filters
+    summon_filter = parser.get('command_filters', 'summon')
+    summon_filter.split(",")
+except configparser.NoSectionError:
+    print("config.ini not found or is not correctly configured.")
+    print("would you like to create it?")
+    create_file = input("y/n:")
+    if create_file.lower() == "y":
+        print("Creating file")
+        # Creating config def
+        config = ConfigParser()
+        config["discord"] = {
+            "token": "change_me",
+            "guild": "change_me",
+            "active_channel": "change_me",
+        }
+        config["server"] = {
+            "mc_installpath": "change_me",
+            "name": "change_me",
+        }
+        config["command_filters"] = {
+            "give": "",
+            "summon": "",
+        }
+        with open("config.ini", 'w') as output_file:
+            config.write(output_file)
+        print("File has been created. Please do not run this program again until the fie has been filled.")
+        exit(0)
+    else:
+        print("File will not be created. Please create the config.ini document and attempt to run the program again.")
+        exit(1)
 
 # Connect to Discord bot
 
