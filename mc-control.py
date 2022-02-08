@@ -31,6 +31,31 @@ def fetch():
     return scr_output
 
 
+# Function to create local logs for Minecraft commands
+
+
+def local_log(log_content):
+    base_dir = os.listdir()
+    if "logs" not in base_dir:
+        os.makedirs("./logs")
+    logs_list = os.listdir("./logs")
+    cur_log = []
+    for i in logs_list:
+        if (int(time.time()) - int(i[:10])) < 86400:
+            cur_log.append(i)
+    if cur_log:
+        cur_log.sort(reverse=True)
+        cur_log = "./logs/" + cur_log[0]
+        with open(cur_log, 'a') as f:
+            f.write(log_content + "\n")
+            f.close()
+    else:
+        cur_log = "./logs/" + str(int(time.time())) + "_log.txt"
+        with open(cur_log, 'w') as f:
+            f.write(log_content + "\n")
+            f.close()
+
+
 # Global vars
 
 
@@ -98,8 +123,11 @@ async def on_ready():
 @bot.command(name='rain', help='Makes it rain or snow on the server')
 async def make_rain(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
-        print("Making it clear")
+        print("Making it rain")
+        local_log(f"{time_called} {author} executed: weather rain")
         os.system("""screen -S %s -p 0 -X stuff "weather rain^M" """ % server_name)
         message = [
             "Hello Seattle!",
@@ -118,8 +146,11 @@ async def make_rain(ctx):
 @bot.command(name='clear', help='Makes the weather clear')
 async def make_clear(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         print("Making it clear")
+        local_log(f"{time_called} {author} executed: weather clear")
         os.system("""screen -S %s -p 0 -X stuff "weather clear^M" """ % server_name)
         message = [
             "A cloudy day is no match for a sunny disposition!",
@@ -139,8 +170,11 @@ async def make_clear(ctx):
 @bot.command(name='thunder', help='Makes the weather thunder')
 async def make_thunder(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         print("Making it thunder")
+        local_log(f"{time_called} {author} executed: weather thunder")
         os.system("""screen -S %s -p 0 -X stuff "weather thunder^M" """ % server_name)
         message = [
             "If the tranquillity is killing you, seek for the storm to save your life!",
@@ -160,8 +194,11 @@ async def make_thunder(ctx):
 @bot.command(name='sunrise', help='Sets time to sunrise')
 async def make_sunrise(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         print("Making it sunrise")
+        local_log(f"{time_called} {author} executed: time set sunrise")
         os.system("""screen -S %s -p 0 -X stuff "time set sunrise^M" """ % server_name)
         message = [
             "The sun does not rise or set. The earth rotates",
@@ -181,8 +218,11 @@ async def make_sunrise(ctx):
 @bot.command(name='midnight', help='Sets time to midnight')
 async def make_midnight(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         print("Making it midnight")
+        local_log(f"{time_called} {author} executed: time set midnight")
         os.system("""screen -S %s -p 0 -X stuff "time set midnight^M" """ % server_name)
         message = [
             "All great beginnings start in the dark, when the moon greets you to a new day at midnight",
@@ -202,8 +242,11 @@ async def make_midnight(ctx):
 @bot.command(name='noon', help='Sets time to noon')
 async def make_noon(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
-        print("Making it clear")
+        print("Making it noon")
+        local_log(f"{time_called} {author} executed: time set noon")
         os.system("""screen -S %s -p 0 -X stuff "time set noon^M" """ % server_name)
         message = [
             "Never get out of bed before noon",
@@ -223,8 +266,11 @@ async def make_noon(ctx):
 @bot.command(name='night', help='Sets time to night')
 async def make_night(ctx):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         print("Making it night")
+        local_log(f"{time_called} {author} executed: time set night")
         os.system("""screen -S %s -p 0 -X stuff "time set night^M" """ % server_name)
         message = [
             "I have loved the stars too fondly to be fearful of the night",
@@ -244,15 +290,16 @@ async def make_night(ctx):
 @bot.command(name='give', help='Gives a user an object. e.g. (!give XrayOven bucket')
 async def give(ctx, *args):
     from_channel = str(ctx.channel)
-    response = ""
-    for arg in args:
-        response = response + " " + arg
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         args[1].replace(" ", "")
         if args[1] in give_filter:
             await ctx.send("You have been blocked form using this command by the server admin team.")
+            local_log(f"{time_called} {author} was blocked from executing: give {args[0]} {args[1]}")
             return()
-        print("Giving" + response)
+        print(f"Giving {args[0]} {args[1]}")
+        local_log(f"{time_called} {author} executed: give {args[0]} {args[1]}")
         os.system("""screen -S %s -p 0 -X stuff "give %s %s^M" """ % (server_name, args[0], args[1]))
         message = [
             "It's not how much we give but how much love we put into giving",
@@ -272,12 +319,22 @@ async def give(ctx, *args):
 @bot.command(name='summon', help='Summon an entity to a user. e.g. (!summon wolf XrayOven')
 async def give(ctx, *args):
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
         args[0].replace(" ", "")
         if args[0] in summon_filter:
             await ctx.send("You have been blocked form using this command by the server admin team.")
+            local_log(
+                f"{time_called} {author} was blocked from executing:"
+                f" execute {args[1]} ~ ~ ~ summon {args[0]} ~ ~ ~"
+            )
             return ()
         print("Summoning " + args[0] + "to " + args[1])
+        local_log(
+            f"{time_called} {author} executed:"
+            f" execute {args[1]} ~ ~ ~ summon {args[0]} ~ ~ ~"
+        )
         os.system(
             """screen -S %s -p 0 -X stuff "execute %s ~ ~ ~ summon %s ~ ~ ~^M" """ % (server_name, args[1], args[0])
         )
@@ -300,7 +357,11 @@ async def give(ctx, *args):
 async def players(ctx):
     await ctx.send("Let me check that")
     from_channel = str(ctx.channel)
+    time_called = int(time.time())
+    author = ctx.author
     if from_channel == dc_channel:
+        print("Listing players")
+        local_log(f"{time_called} {author} executed: list")
         os.system(
             """screen -S %s -p 0 -X stuff "list^M" """ % server_name
         )
