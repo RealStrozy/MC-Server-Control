@@ -88,14 +88,24 @@ except configparser.NoSectionError:
         print("Creating file")
         # Creating config def
         config = ConfigParser()
+        print("Let's set up your Discord config first.")
+        token = input("Discord token: ")
+        guild = input("Your Discord guild: ")
+        active_channel = input("Your active channel: ")
+        print("Now, we'll set up the config for your server.")
+        server_install_path = input("Enter the path that your Minecraft installation is running at: ")
+        name = input("Your Minecraft server name: ")
+        print(
+            "Finally, if you wish to have filters for your commands, you may edit the .ini file that will be created."
+        )
         config["discord"] = {
-            "token": "change_me",
-            "guild": "change_me",
-            "active_channel": "change_me",
+            "token": token,
+            "guild": guild,
+            "active_channel": active_channel,
         }
         config["server"] = {
-            "mc_installpath": "change_me",
-            "name": "change_me",
+            "mc_installpath": server_install_path,
+            "name": name,
         }
         config["command_filters"] = {
             "give": "",
@@ -103,7 +113,7 @@ except configparser.NoSectionError:
         }
         with open("config.ini", 'w') as output_file:
             config.write(output_file)
-        print("File has been created. Please do not run this program again until the fie has been filled.")
+        print("config.ini has been created. Please re-run this program to start your server.")
         exit(0)
     else:
         print("File will not be created. Please create the config.ini document and attempt to run the program again.")
