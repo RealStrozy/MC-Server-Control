@@ -1,5 +1,4 @@
 # mc-control.py
-
 import os
 import configparser
 from configparser import ConfigParser
@@ -8,15 +7,13 @@ import random
 import time
 
 # Define functions
-
-
 parser = configparser.ConfigParser()
+
+
 bot = commands.Bot(command_prefix='!')
 
 
 # Function to receive input from screen log
-
-
 def fetch():
     time.sleep(12)
     logpath = "%s/logs" % mc_installpath
@@ -32,8 +29,6 @@ def fetch():
 
 
 # Function to create local logs for Minecraft commands
-
-
 def local_log(log_content):
     base_dir = os.listdir()
     if "logs" not in base_dir:
@@ -57,29 +52,31 @@ def local_log(log_content):
 
 
 # Global vars
-
-
 install_path = os.getcwd()
 
 
 # Divide INI file into global vars
 parser.read('%s/config.ini' % install_path)
 
-
-# Discord
 try:
+    # Discord
     dc_token = parser.get('discord', 'token')
     dc_guild = parser.get('discord', 'guild')
     dc_channel = parser.get('discord', 'active_channel')
+
     # Server
     server_name = parser.get('server', 'name')
     mc_installpath = parser.get('server', 'mc_installpath')
+
     # !give filters
     give_filter = parser.get('command_filters', 'give')
     give_filter.split(",")
+
     # !summon filters
     summon_filter = parser.get('command_filters', 'summon')
     summon_filter.split(",")
+
+# If INI parsing fails, create the file
 except configparser.NoSectionError:
     print("config.ini not found or is not correctly configured.")
     print("would you like to create it?")
@@ -119,17 +116,14 @@ except configparser.NoSectionError:
         print("File will not be created. Please create the config.ini document and attempt to run the program again.")
         exit(1)
 
+
 # Connect to Discord bot
-
-
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
 # !rain
-
-
 @bot.command(name='rain', help='Makes it rain or snow on the server')
 async def make_rain(ctx):
     from_channel = str(ctx.channel)
@@ -152,7 +146,6 @@ async def make_rain(ctx):
 
 
 # !clear
-
 @bot.command(name='clear', help='Makes the weather clear')
 async def make_clear(ctx):
     from_channel = str(ctx.channel)
@@ -175,8 +168,6 @@ async def make_clear(ctx):
 
 
 # !thunder
-
-
 @bot.command(name='thunder', help='Makes the weather thunder')
 async def make_thunder(ctx):
     from_channel = str(ctx.channel)
@@ -199,8 +190,6 @@ async def make_thunder(ctx):
 
 
 # !sunrise
-
-
 @bot.command(name='sunrise', help='Sets time to sunrise')
 async def make_sunrise(ctx):
     from_channel = str(ctx.channel)
@@ -223,8 +212,6 @@ async def make_sunrise(ctx):
 
 
 # !midnight
-
-
 @bot.command(name='midnight', help='Sets time to midnight')
 async def make_midnight(ctx):
     from_channel = str(ctx.channel)
@@ -247,8 +234,6 @@ async def make_midnight(ctx):
 
 
 # !noon
-
-
 @bot.command(name='noon', help='Sets time to noon')
 async def make_noon(ctx):
     from_channel = str(ctx.channel)
@@ -271,8 +256,6 @@ async def make_noon(ctx):
 
 
 # !night
-
-
 @bot.command(name='night', help='Sets time to night')
 async def make_night(ctx):
     from_channel = str(ctx.channel)
@@ -295,8 +278,6 @@ async def make_night(ctx):
 
 
 # !give
-
-
 @bot.command(name='give', help='Gives a user an object. e.g. (!give XrayOven bucket')
 async def give(ctx, *args):
     from_channel = str(ctx.channel)
@@ -324,8 +305,6 @@ async def give(ctx, *args):
 
 
 # !summon
-
-
 @bot.command(name='summon', help='Summon an entity to a user. e.g. (!summon wolf XrayOven')
 async def give(ctx, *args):
     from_channel = str(ctx.channel)
@@ -361,8 +340,6 @@ async def give(ctx, *args):
 
 
 # !players
-
-
 @bot.command(name='players', help="List all logged in users.")
 async def players(ctx):
     await ctx.send("Let me check that")
